@@ -161,6 +161,28 @@ These solve different problems: *data identity* versus *response validity*.
 5. **Cache fallback:** While online, load a search. In **Cache**, enable offline mode and refresh the *same* query. Cached first-page results remain visible, labeled as offline cache, alongside the network error.
 6. **User-scoped favorites:** Favorite books under **User A**, switch to **User B**, and verify that their favorites are separate.
 
+## Refactored Source
+
+The app now uses feature-first folders with separate search data, domain models,
+Cubit/state, pages, and focused book/filter widgets. All four original labs and
+their teaching controls remain available. See [REFACTORING_REPORT.md](REFACTORING_REPORT.md)
+for the initial audit, decisions, complete file inventory, tests, and validation limits.
+
+18 automated test cases are included. They have **not been executed** in the
+refactoring environment because Flutter and Dart executables are unavailable.
+Run the following from the project directory before accepting the changes:
+
+```bash
+flutter pub get
+dart format lib test
+flutter analyze
+flutter test
+```
+
+`pubspec.lock` retains the original resolution; `flutter pub get` must refresh it
+and generated platform plugin registrants after removal of unused SQLite/codegen
+packages. No new dependency was introduced.
+
 ## Project Status
 
 **Educational prototype — not production-ready.**
@@ -171,25 +193,21 @@ The following are **not implemented** in the current version:
 - Persistent Drift/SQLite caching and offline search over stored records
 - Authentication, OAuth/OIDC, secure token storage, or production session isolation
 - Multi-select filters, range filters, Arabic text normalization, or relevance ranking
-- Automated unit/widget/integration tests
-- Fully separated feature-first Clean Architecture layers
+- Integration tests on a device/browser
 - A deterministic, instrumented race-condition demonstration
 
 ### Known Limitations
 
 - Memory cache stores **only the first page** per query and is lost when the app is terminated.
-- The request counter is not reactive and may need a UI rebuild to display the latest count.
-- The search field is not synchronized through a `TextEditingController`; using **Clear** resets the search state but may leave the old text visible.
 - Favorites are isolated in UI memory only, not in persistent storage or authenticated sessions.
 - The mock data is generated periodically, so its distributions are not representative of a real catalog.
 
 ## Possible Next Steps
 
 - Connect a real paginated REST API through a repository abstraction
-- Introduce feature-first layers and dedicated models/repositories
 - Add persistent caching and offline search using Drift/SQLite
 - Add robust query normalization, richer filter combinations, and accessible Arabic/RTL UI
-- Write Cubit and widget tests for debounce, cancellation, stale responses, pagination, and offline fallback
+- Execute the included unit/widget tests in a Flutter SDK environment
 - Add deterministic request timing and observability for live demonstrations
 
 ## Author
